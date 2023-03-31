@@ -1,0 +1,38 @@
+input{
+    width:400px;
+    height:40px;
+    margin-top: 40px;
+    box-sizing: border-box;
+    border: 3px solid #ccc;
+    -webkit-transition: 0.5s;
+    transition: 0.5s;
+    outline: none;
+    padding: 12px 20px;
+}
+
+button{
+    width:100px;
+    height:40px;
+    background-color: #ee4a64;
+    color:white;
+    border: none;
+}
+.main_div{
+    width:400px;
+    height:auto;
+    border:1px solid #ccc;
+    margin-left: 31.6%;
+}
+h5{
+    cursor: pointer;
+}
+.single{
+    display: flex;
+    justify-content: space-evenly;
+}
+.click_data{
+    font-size: 50px;
+    margin-top: 10px;
+    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+
+}
