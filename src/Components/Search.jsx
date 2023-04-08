@@ -1,82 +1,51 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import "./Search.css";
-const Search = () => {
-  const [Search, setSearch] = useState([]);
-  const [SearchData, setSearchData] = useState([]);
-  const [showBox, setShowBox] = useState(false);
-  const [value, setValue] = useState("");
-  const [data, setData] = useState("");
 
-  //
-  function GetData() {
-    fetch("https://navadhiti-server.onrender.com/fields")
-      .then((res) => res.json())
-      .then((res) => {
-        setSearch(res);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  }
+function SearchBox() {
+  const [searchTerm, setSearchTerm] = useState("");
+  const [suggestions, setSuggestions] = useState([]);
 
-  // useEffect
-  useEffect(() => {
-    GetData();
-  }, []);
+  const handleInputChange = (event) => {
+    const value = event.target.value;
+    setSearchTerm(value);
 
-  const handleChange = (e) => {
-    setValue(e.target.value);
-    const FilterResult =
-      Search &&
-      Search.filter(
-        (item) =>
-          item.type.toLowerCase().includes(e.target.value.toLowerCase()) ||
-          item.label.toLowerCase().includes(e.target.value.toLowerCase())
-      );
-    setSearchData(FilterResult);
+    fetch(`https://navadhiti-server.onrender.com/fields?q=${value}`)
+      .then((response) => response.json())
+      .then((data) => setSuggestions(data));
   };
-  //console.log("SearchData",SearchData);
-  //console.log(value)
-
   //
-  useEffect(() => {
-    if (value === "") {
-      setShowBox(false);
-    }
-    if (value !== "") {
-      setShowBox(true);
-    }
-  }, [value]);
 
-  const handleCick = (key) => {
-    setData(key);
-    setShowBox(false);
+  const handleSuggestionClick = (suggestion) => {
+    setSearchTerm(suggestion.label);
   };
 
   return (
     <div>
-      <div>
-        <input
-          placeholder="Please enter type or label here..."
-          type="text"
-          onChange={handleChange}
-        />
-        <button onChange={handleChange}>Search</button>
-      </div>
-      {showBox && (
-        <div className="main_div">
-          {SearchData &&
-            SearchData.map((el) => (
-              <div className="single">
-                <h5 onClick={() => handleCick(el.key)}>{el.key}</h5>
-              </div>
-            ))}
-        </div>
-      )}
+      <label htmlFor="search-input">Search:</label>
+      <input
+        type="text"
+        id="search-input"
+        value={searchTerm}
+        onChange={handleInputChange}
+      />
 
-      <div className="click_data">{data}</div>
+      {suggestions.length > 0 && (
+        <ul>
+          {suggestions.map((suggestion) => (
+            <li
+              key={suggestion.type}
+              onClick={() => handleSuggestionClick(suggestion)}
+            >
+              {suggestion.label}
+            </li>
+          ))}
+        </ul>
+      )}
+      {suggestions.length > 0 && suggestions[0].error && (
+        <p>{suggestions[0].error}</p>
+      )}
     </div>
   );
-};
+}
 
-export default Search;
+export default SearchBox;
